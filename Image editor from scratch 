@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMAGE EDITOR</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 20px;
+      gap: 10px;
+    }
+    .image-container img {
+      max-width: 100%;
+      max-height: 100%;
+      transition: all 0.3s ease;
+    }
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #222;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      height: 500px;
+      width: 500px;
+      position: relative;
+    }
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+    .transform-controls{
+      display: flex;
+      flex-direction: row;
+    }
+    .control, .transform {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #007bff;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 10px;
+      background: #007bff;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #0057c2;
+    }
+    #upload {
+      margin-bottom: 10px;
+    }
+    .transform-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+    .transform-buttons button {
+      background: #444;
+    }
+    .transform-buttons button:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+    <div class="controls">
+      <input type="file" id="upload" accept="image/*">
+      <div class="control">
+        <label>Brightness</label>
+        <input type="range" id="brightness" min="0" max="200" value="100">
+      </div>
+      <div class="control">
+        <label>Contrast</label>
+        <input type="range" id="contrast" min="0" max="200" value="100">
+      </div>
+      <div class="control">
+        <label>Saturation</label>
+        <input type="range" id="saturate" min="0" max="200" value="100">
+      </div>
+      <div class="control">
+        <label>Gray-Scale</label>
+        <input type="range" id="grayscale" min="0" max="100" value="0">
+      </div>
+      <div class="control">
+        <label>Sepia Tone</label>
+        <input type="range" id="sepia" min="0" max="100" value="0">
+      </div>
+      <div class="control">
+        <label>Opacity</label>
+        <input type="range" id="opacity" min="0" max="100" value="100">
+      </div>
+      <div class="control">
+        <label>Invert</label>
+        <input type="range" id="invert" min="0" max="100" value="0">
+      </div>
+      <div class="control">
+        <label>Blur</label>
+        <input type="range" id="blur" min="0" max="10" value="0">
+      </div>
+      <div class="control">
+        <label>Hue Rotate</label>
+        <input type="range" id="hue" min="0" max="360" value="0">
+      </div>
+      <div class="buttons">
+        <button id="reset">Reset</button>
+        <button id="download">Download</button>
+      </div>
+    </div>
+    <div>
+      <div class="image-container">
+        <img id="preview" src="https://via.placeholder.com/400x300?text=Upload+an+Image" alt="Preview">
+      </div>
+    </div>
+  </div> 
+  <script>
+    const img = document.getElementById('preview');
+    const upload = document.getElementById('upload');
+    const reset = document.getElementById('reset');
+    const download = document.getElementById('download');
+    const filters = {
+      brightness: 100,
+      contrast: 100,
+      saturate: 100,
+      grayscale:0,
+      sepia: 0,
+      opacity: 100,
+      invert: 0,
+      blur: 0,
+      hue: 0,
+    };
+    function applyFilters() {
+      img.style.filter = `
+        brightness(${filters.brightness}%)
+        contrast(${filters.contrast}%)
+        saturate(${filters.saturate}%)
+        blur(${filters.blur}px)
+        hue-rotate(${filters.hue}deg)
+        grayscale(${filters.grayscale}%)
+        sepia(${filters.sepia}%)
+        opacity(${filters.opacity}%)
+        invert(${filters.invert}%)
+      `;
+    }
+
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+      slider.addEventListener('input', e => {
+        filters[e.target.id] = e.target.value;
+        applyFilters();
+      });
+    });
+    upload.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => (img.src = reader.result);
+        reader.readAsDataURL(file);
+      }
+    });
+    reset.addEventListener('click', () => {
+      for (let key in filters) {
+        filters[key] = key === 'brightness' || key === 'contrast' || key === 'saturate' || key === 'opacity'? 100 : 0;
+        document.getElementById(key).value = filters[key];
+        applyFilters()
+      }
+    });
+    download.addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.filter = img.style.filter;
+      const link = document.createElement('a');
+      link.download = 'edited-image.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  </script>
+</body>
+</html>
