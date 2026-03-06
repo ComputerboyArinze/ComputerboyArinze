@@ -1,7 +1,7 @@
 - 👋 Hi, I’m @ComputerboyArinze
 - 👀 I’m interested in ... python and web dev 
-- 🌱 I’m currently learning ...""
-- 💞️ I’m looking to collaborate on ...""
+- 🌱 I’m currently learning ..."Machine Learning"
+- 💞️ I’m looking to collaborate on ..."Building a data analysis startup"
 - 📫 How to reach me ...09161697699 NGN
 - 😄 Pronouns: ...
 - ⚡ Fun fact: ... m
